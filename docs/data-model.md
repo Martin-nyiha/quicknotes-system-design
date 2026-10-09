@@ -35,7 +35,8 @@
 ## Relationships
 
 - **One-to-many:** one user has many notes, and each note belongs to exactly one user (`notes.user_id`).
-- **Many-to-many:** notes and tags. A note can have many tags, and a tag can be on many notes. (Write one or two sentences explaining why `note_tags` is needed as a join table.)
+- **Many-to-many:** notes and tags. A note can have many tags, and a tag can be on many notes. 
+The `note_tags` join table is required to model a many-to-many relationship between notes and tags. A single note can have multiple tags, and a single tag can be assigned to multiple notes. Using a dedicated join table with composite foreign keys (`note_id` and `tag_id`) normalizes the database, eliminates data redundancy, and enables efficient filtering without storing unnormalized lists or CSV strings in a single column.
 
 ## CREATE TABLE statements
 
@@ -101,8 +102,8 @@ GROUP BY tags.id, tags.name;
 CREATE INDEX idx_notes_user_id ON notes(user_id);
 ```
 
-**Reason:** (explain in your own words: `GET /notes` always filters by `user_id`, so without an index the database checks every note, and with it the database jumps to that user's notes. Mention the trade-off that writes become slightly slower.)
+**Reason:** `GET /notes` always filters by `user_id`. Without an index, the database must perform a full table scan, checking every single note. With an index on `user_id`, the database jumps directly to that user's notes, drastically speeding up read queries. The trade-off is that write operations (`INSERT`, `UPDATE`, `DELETE`) become slightly slower because the database must update both the table and the index structure.
 
 ## SQL or NoSQL?
 
-(Write a short paragraph in your own words, like your Day 6 justification: the data is structured and related, the rules such as unique emails and valid foreign keys matter, and the many-to-many tags need joins.)
+We chose a relational SQL database because our data is highly structured and interconnected with clear relationships between users, notes, and tags. Enforcing relational integrity—such as unique email addresses, valid foreign keys, and structured join tables for many-to-many tag mappings—is critical for this application. SQL also provides ACID compliance for consistency and allows efficient index-driven joins to support fast read operations.
