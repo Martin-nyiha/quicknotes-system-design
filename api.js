@@ -105,13 +105,20 @@ async function createNote(event) {
     notes.unshift(created);
     render();
     form.reset();
-    setStatus("Note created.", "success");
+    // Change your success status call inside createNote to:
+    setStatus(`Note created successfully (Status: 201, ID: ${createdNote.id})`, "success");
   } catch (error) {
     setStatus(`Could not create note: ${error.message}`, "error");
   } finally {
     setBusy(false);
   }
 }
+
+// Note on simulated API deletions:
+// JSONPlaceholder simulates HTTP DELETE requests by returning a 200 OK status 
+// response without actually persisting changes on the server. Because the server 
+// does not modify its underlying dataset, refreshing the page will reload the 
+// original notes list.
 
 async function deleteNote(note) {
   setStatus("Deleting note...", "loading");
