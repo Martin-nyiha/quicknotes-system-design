@@ -105,8 +105,7 @@ async function createNote(event) {
     notes.unshift(created);
     render();
     form.reset();
-    // Change your success status call inside createNote to:
-    setStatus(`Note created successfully (Status: 201, ID: ${createdNote.id})`, "success");
+    setStatus(`Note created successfully (Status: 201, ID: ${created.id})`, "success");
   } catch (error) {
     setStatus(`Could not create note: ${error.message}`, "error");
   } finally {
